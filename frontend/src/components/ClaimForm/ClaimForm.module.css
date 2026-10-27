@@ -1,0 +1,322 @@
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(2 6 23 / 75%);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+.modal {
+  width: 100%;
+  max-width: 600px;
+  max-height: calc(100dvh - 2rem);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 35%);
+  overflow: hidden;
+  animation: modalEnter 180ms ease-out;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.header h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.header p {
+  margin: 0.5rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.closeButton {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background 150ms ease,
+    border-color 150ms ease;
+}
+
+.closeButton:hover {
+  color: var(--text);
+  background: rgb(255 255 255 / 5%);
+  border-color: var(--secondary);
+}
+
+.form {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.75rem;
+  margin: 0;
+  overflow-y: auto;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.field label {
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.optional {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.field input,
+.field textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.8rem 0.9rem;
+  color: var(--text);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  outline: none;
+  font: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgb(99 102 241 / 15%);
+}
+
+.field input[aria-invalid='true'],
+.field textarea[aria-invalid='true'] {
+  border-color: var(--lost);
+}
+
+.field textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.error {
+  margin: 0;
+  color: var(--lost);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.625rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.primaryButton {
+  color: #fff;
+  background: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+.primaryButton:hover {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.secondaryButton {
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.secondaryButton:hover {
+  background: rgb(255 255 255 / 5%);
+  border-color: var(--secondary);
+}
+
+.primaryButton:active,
+.secondaryButton:active {
+  transform: scale(0.98);
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.closeButton:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 3px;
+}
+
+.note {
+  margin: 1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.775rem;
+  line-height: 1.6;
+}
+
+.success {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.success > i {
+  display: inline-grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--found);
+  background: rgb(74 222 128 / 10%);
+  border-radius: 50%;
+  font-size: 2rem;
+}
+
+.success h3 {
+  margin: 1rem 0 0.5rem;
+  color: var(--text);
+  font-size: 1.125rem;
+}
+
+.success p {
+  margin: 0 0 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.success .primaryButton {
+  min-width: 120px;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    max-height: 90dvh;
+    border-radius: 1rem 1rem 0 0;
+    border-bottom: 0;
+  }
+
+  .header {
+    padding: 1.25rem;
+  }
+
+  .form {
+    padding: 1.25rem;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal {
+    animation: none;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .closeButton,
+  .field input,
+  .field textarea {
+    transition: none;
+  }
+}
+
+
+.form,
+.success,
+.overlay {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.form::-webkit-scrollbar,
+.success::-webkit-scrollbar,
+.overlay::-webkit-scrollbar {
+  display: none;
+}

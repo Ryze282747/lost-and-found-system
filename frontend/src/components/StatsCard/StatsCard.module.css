@@ -1,0 +1,67 @@
+
+.statsCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  font-size: 1.25rem;
+}
+
+/* Icon color variants */
+.primary {
+  color: var(--secondary);
+  background: rgb(99 102 241 / 14%);
+}
+
+.found {
+  color: var(--found);
+  background: rgb(74 222 128 / 12%);
+}
+
+.lost {
+  color: var(--lost);
+  background: rgb(248 113 113 / 12%);
+}
+
+.pending {
+  color: var(--pending);
+  background: rgb(251 191 36 / 12%);
+}
+
+.value {
+  color: var(--text);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}

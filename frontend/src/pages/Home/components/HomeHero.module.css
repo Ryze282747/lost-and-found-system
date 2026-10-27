@@ -1,0 +1,242 @@
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  min-height: 300px;
+  padding: 40px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      rgb(99 102 241 / 14%),
+      transparent 35%
+    ),
+    var(--surface);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  max-width: 560px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: var(--secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.eyebrow i {
+  font-size: 1rem;
+}
+
+.title {
+  color: var(--text);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+}
+
+.title span {
+  color: var(--secondary);
+}
+
+.description {
+  max-width: 460px;
+  margin-top: 16px;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.primaryButton {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+.primaryButton:hover {
+  background: var(--secondary);
+  transform: translateY(-1px);
+}
+
+.secondaryButton {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--text);
+}
+
+.secondaryButton:hover {
+  border-color: var(--secondary);
+  background: rgb(129 140 248 / 8%);
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 3px;
+}
+
+.visual {
+  position: relative;
+  display: flex;
+  flex: 0 0 240px;
+  align-items: center;
+  justify-content: center;
+  width: 240px;
+  height: 220px;
+}
+
+.visualIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  border: 1px solid rgb(129 140 248 / 25%);
+  border-radius: 36px;
+  background: rgb(99 102 241 / 12%);
+  color: var(--secondary);
+  font-size: 5rem;
+  transform: rotate(-8deg);
+}
+
+.floatingIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--background);
+  color: var(--text);
+  font-size: 1.5rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+}
+
+.floatingIcon:nth-child(2) {
+  top: 12px;
+  right: 4px;
+}
+
+.floatingIcon:nth-child(3) {
+  bottom: 12px;
+  left: 0;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    padding: 32px 24px;
+  }
+
+  .visual {
+    flex-basis: 160px;
+    width: 160px;
+    height: 180px;
+  }
+
+  .visualIcon {
+    width: 120px;
+    height: 120px;
+    border-radius: 28px;
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+    padding: 28px 20px;
+  }
+
+  .title {
+    font-size: clamp(2rem, 9vw, 2.5rem);
+  }
+
+  .description {
+    font-size: 0.875rem;
+  }
+
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .visual {
+    align-self: center;
+    flex-basis: auto;
+    height: 140px;
+  }
+
+  .visualIcon {
+    width: 100px;
+    height: 100px;
+    font-size: 3.5rem;
+  }
+
+  .floatingIcon {
+    width: 42px;
+    height: 42px;
+    font-size: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryButton,
+  .secondaryButton {
+    transition: none;
+  }
+
+  .primaryButton:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,133 @@
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+/* Statistics */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+/* Recent items section */
+.itemsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sectionTitle {
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.sectionDescription {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.resultsCount {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+/* Item cards */
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .home {
+    padding: 24px;
+    gap: 28px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .itemsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .home {
+    padding: 16px;
+    gap: 24px;
+  }
+
+  .statsGrid {
+    gap: 12px;
+  }
+
+  .itemsSection {
+    gap: 20px;
+  }
+
+  .sectionHeader {
+    align-items: flex-start;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+
+  .sectionDescription {
+    font-size: 0.8125rem;
+  }
+
+  .itemsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+/* Very narrow phones */
+@media (max-width: 380px) {
+  .home {
+    padding: 12px;
+  }
+
+  .itemsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .resultsCount {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
+}

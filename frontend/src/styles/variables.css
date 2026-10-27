@@ -1,0 +1,16 @@
+:root{
+  --primary: #6366F1;
+  --secondary: #818CF8;
+
+  --background: #0F172A;
+  --surface: #1E293B;
+
+  --text: #F8FAFC;
+  --text-secondary: #94A3B8;
+
+  --found: #4ADE80;
+  --lost: #F87171;
+  --pending: #FBBF24;
+
+  --border: #334155;
+}

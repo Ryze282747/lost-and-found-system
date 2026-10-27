@@ -1,0 +1,275 @@
+
+/* =========================
+   Navbar
+   ========================= */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.container {
+  max-width: 1280px;
+  min-height: 40px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* =========================
+   Brand
+   ========================= */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-shrink: 0;
+
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand > i {
+  color: var(--primary);
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.brandName {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+/* =========================
+   Desktop Navigation
+   ========================= */
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.link > i {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+/* =========================
+   Mobile Menu Button
+   ========================= */
+
+.menuButton,
+.closeButton {
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+
+  font-size: 1.5rem;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.menuButton:hover,
+.closeButton:hover {
+  background: var(--background);
+  border-color: var(--primary);
+}
+
+/* =========================
+   Overlay
+   ========================= */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  background: rgb(0 0 0 / 0.55);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+
+.overlayVisible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* =========================
+   Mobile Sidebar
+   ========================= */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 201;
+
+  display: flex;
+  flex-direction: column;
+
+  width: min(300px, 85vw);
+  height: 100vh;
+  height: 100dvh;
+
+  padding: 1.25rem;
+
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+
+  transform: translateX(-100%);
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    transform 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.sidebarOpen {
+  transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Sidebar Header */
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebarHeader .brandName {
+  font-size: 1rem;
+}
+
+.closeButton {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Sidebar Links */
+
+.sidebarLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  padding-top: 1.5rem;
+}
+
+.sidebarLinks .link {
+  width: 100%;
+  padding: 0.875rem 1rem;
+
+  border-radius: 8px;
+  font-size: 0.9375rem;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.sidebarLinks .link > i {
+  font-size: 1.25rem;
+}
+
+.sidebarLinks .link:hover {
+  background: var(--background);
+  color: var(--text);
+}
+
+/* Sidebar Footer */
+
+.sidebarFooter {
+  margin-top: auto;
+  padding-top: 1rem;
+
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 768px) {
+  .nav {
+    padding: 0.875rem 1rem;
+  }
+
+  .links {
+    display: none;
+  }
+
+  .menuButton {
+    display: inline-flex;
+  }
+
+  .container {
+    gap: 1rem;
+  }
+}
+
+/* Respect reduced-motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .sidebar,
+  .link,
+  .menuButton,
+  .closeButton {
+    transition: none;
+  }
+}
