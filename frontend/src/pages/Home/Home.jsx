@@ -1,69 +1,95 @@
-
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import StatsCard from '../../components/StatsCard/StatsCard.jsx';
 import ItemCard from '../../components/ItemCard/ItemCard.jsx';
 import EmptyState from '../../components/EmptyState/EmptyState.jsx';
-
 import HomeHero from './components/HomeHero.jsx';
 import ItemSearch from './components/ItemSearch.jsx';
-import mockItems from './data/mockItems.js';
+import Loading from '../../components/Loading/Loading.jsx';
 
+import { getAllItems } from '../../pages/Items/api/itemApi.js';
+
+import StatCardSkeleton from './components/StatCardSkeleton.jsx';
 import styles from './Home.module.css';
 
 function Home() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [category, setCategory] = useState('all');
 
-  // Get unique categories from the available items.
-  const categories = useMemo(() => {
-    return [...new Set(mockItems.map((item) => item.category))].sort();
+  useEffect(() => {
+    async function fetchItems() {
+      try {
+        setLoading(true);
+        setError('');
+
+        const data = await getAllItems();
+        setItems(data);
+      } catch (err) {
+        console.error('Failed to fetch items:', err);
+        setError('Unable to load items. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchItems();
   }, []);
 
-  // Calculate dashboard statistics.
+  // Get unique categories from the API data.
+  const categories = useMemo(() => {
+    return [...new Set(items.map((item) => item.category))].sort();
+  }, [items]);
+
+  // Calculate statistics from the API data.
   const stats = useMemo(() => [
     {
       title: 'Total Items',
-      value: mockItems.length,
+      value: items.length,
       icon: 'ri-archive-line',
       description: 'All reported items',
       color: 'primary',
     },
     {
       title: 'Lost Items',
-      value: mockItems.filter((item) => item.status === 'lost').length,
+      value: items.filter((item) => item.status === 'lost').length,
       icon: 'ri-search-line',
       description: 'Items reported missing',
       color: 'lost',
     },
     {
       title: 'Found Items',
-      value: mockItems.filter((item) => item.status === 'found').length,
+      value: items.filter((item) => item.status === 'found').length,
       icon: 'ri-checkbox-circle-line',
       description: 'Items reported found',
       color: 'found',
     },
     {
       title: 'Pending',
-      value: mockItems.filter((item) => item.status === 'pending').length,
+      value: items.filter((item) => item.status === 'pending').length,
       icon: 'ri-time-line',
       description: 'Awaiting resolution',
       color: 'pending',
     },
-  ], []);
+  ], [items]);
 
-  // Search and filter the items.
+  // Search and filter the API data.
   const filteredItems = useMemo(() => {
     const keyword = search.trim().toLowerCase();
 
-    return mockItems.filter((item) => {
+    return items.filter((item) => {
       const matchesSearch = [
         item.name,
         item.category,
         item.location,
         item.description,
-      ].some((value) => value.toLowerCase().includes(keyword));
+      ].some((value) =>
+        String(value ?? '').toLowerCase().includes(keyword)
+      );
 
       const matchesStatus =
         status === 'all' || item.status === status;
@@ -73,7 +99,7 @@ function Home() {
 
       return matchesSearch && matchesStatus && matchesCategory;
     });
-  }, [search, status, category]);
+  }, [items, search, status, category]);
 
   function clearFilters() {
     setSearch('');
@@ -84,20 +110,28 @@ function Home() {
   return (
     <main className={styles.home}>
       <HomeHero />
-
-      <section className={styles.statsGrid} aria-label="Item statistics">
-        {stats.map((stat) => (
-          <StatsCard
-            key={stat.title}
-            title={stat.title}
-            value={stat.value}
-            icon={stat.icon}
-            description={stat.description}
-            color={stat.color}
-          />
-        ))}
+      <section
+        className={styles.statsGrid}
+        aria-label="Item statistics"
+        aria-busy={loading}
+      >
+        {loading ? (
+          Array.from({ length: 4 }, (_, index) => (
+            <StatCardSkeleton key={index} />
+          ))
+        ) : (
+          stats.map((stat) => (
+            <StatsCard
+              key={stat.title}
+              title={stat.title}
+              value={stat.value}
+              icon={stat.icon}
+              description={stat.description}
+              color={stat.color}
+            />
+          ))
+        )}
       </section>
-
       <section className={styles.itemsSection}>
         <div className={styles.sectionHeader}>
           <div>
@@ -108,8 +142,12 @@ function Home() {
           </div>
 
           <span className={styles.resultsCount}>
-            {filteredItems.length}{' '}
-            {filteredItems.length === 1 ? 'item' : 'items'}
+            {loading ? 'Loading...' : (
+              <>
+                {filteredItems.length}{' '}
+                {filteredItems.length === 1 ? 'item' : 'items'}
+              </>
+            )}
           </span>
         </div>
 
@@ -123,7 +161,17 @@ function Home() {
           categories={categories}
         />
 
-        {filteredItems.length > 0 ? (
+        {loading ? (
+          <Loading message="Loading recent items..." />
+        ) : error ? (
+          <EmptyState
+            icon="ri-error-warning-line"
+            title="Unable to load items"
+            description={error}
+            actionLabel="Try again"
+            onAction={() => window.location.reload()}
+          />
+        ) : filteredItems.length > 0 ? (
           <div className={styles.itemsGrid}>
             {filteredItems.map((item) => (
               <ItemCard

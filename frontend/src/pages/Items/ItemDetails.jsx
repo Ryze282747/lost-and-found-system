@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { getItemById } from '../../pages/Items/api/itemApi.js';
 
 import Card from '../../components/Card/Card.jsx';
 import EmptyState from '../../components/EmptyState/EmptyState.jsx';
 import ClaimForm from '../../components/ClaimForm/ClaimForm.jsx';
 import FoundItemForm from '../../components/FoundItemForm/FoundItemForm.jsx';
-import mockItems from '../../pages/Home/data/mockItems.js';
+import Loading from '../../components/Loading/Loading.jsx';
 
 import styles from './ItemDetails.module.css';
 
@@ -14,8 +15,34 @@ function ItemDetails() {
 
   const [isClaimFormOpen, setIsClaimFormOpen] = useState(false);
   const [isFoundFormOpen, setIsFoundFormOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [item, setItem] = useState(null);
 
-  const item = mockItems.find((item) => String(item.id) === id);
+  useEffect(() => {
+    async function fetchItem(item_id) {
+      try {
+        setLoading(true);
+        setError('');
+
+        const data = await getItemById(item_id);
+        setItem(data);
+      } catch (err) {
+        console.error('Failed to fetch items:', err);
+        setError('Unable to load items. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchItem(id);
+  }, []);
+
+  if (loading) {
+    return (
+      <Loading fullPage={true}/>
+    );
+  }
 
   if (!item) {
     return (
@@ -93,8 +120,8 @@ function ItemDetails() {
             <div className={styles.infoRow}>
               <i className="ri-calendar-line" aria-hidden="true" />
               <div>
-                <span className={styles.infoLabel}>Date reported</span>
-                <p>{item.date || 'Not specified'}</p>
+                <span className={styles.infoLabel}>Incident date</span>
+                <p>{item.incident_date || 'Not specified'}</p>
               </div>
             </div>
           </div>

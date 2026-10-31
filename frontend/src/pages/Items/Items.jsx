@@ -1,33 +1,59 @@
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import ItemCard from '../../components/ItemCard/ItemCard.jsx';
 import EmptyState from '../../components/EmptyState/EmptyState.jsx';
-
 import ItemSearch from '../Home/components/ItemSearch.jsx';
-import mockItems from '../Home/data/mockItems.js';
+import Loading from '../../components/Loading/Loading.jsx';
+
+import { getAllItems } from '../../pages/Items/api/itemApi.js';
 
 import styles from './Items.module.css';
 
 function Items() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [category, setCategory] = useState('all');
 
-  const categories = useMemo(() => {
-    return [...new Set(mockItems.map((item) => item.category))].sort();
+  useEffect(() => {
+    async function fetchItems() {
+      try {
+        setLoading(true);
+        setError('');
+
+        const data = await getAllItems();
+        setItems(data);
+      } catch (err) {
+        console.error('Failed to fetch items:', err);
+        setError('Unable to load items. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchItems();
   }, []);
+
+  const categories = useMemo(() => {
+    return [...new Set(items.map((item) => item.category))].sort();
+  }, [items]);
 
   const filteredItems = useMemo(() => {
     const keyword = search.trim().toLowerCase();
 
-    return mockItems.filter((item) => {
+    return items.filter((item) => {
       const matchesSearch = [
         item.name,
         item.category,
         item.location,
         item.description,
-      ].some((value) => value.toLowerCase().includes(keyword));
+      ].some((value) =>
+        String(value ?? '').toLowerCase().includes(keyword)
+      );
 
       const matchesStatus =
         status === 'all' || item.status === status;
@@ -37,7 +63,7 @@ function Items() {
 
       return matchesSearch && matchesStatus && matchesCategory;
     });
-  }, [search, status, category]);
+  }, [items, search, status, category]);
 
   function clearFilters() {
     setSearch('');
@@ -71,7 +97,17 @@ function Items() {
         categories={categories}
       />
 
-      {filteredItems.length > 0 ? (
+      {loading ? (
+        <Loading message="Loading lost and found items..." />
+      ) : error ? (
+        <EmptyState
+          icon="ri-error-warning-line"
+          title="Unable to load items"
+          description={error}
+          actionLabel="Try again"
+          onAction={() => window.location.reload()}
+        />
+      ) : filteredItems.length > 0 ? (
         <div className={styles.itemsGrid}>
           {filteredItems.map((item) => (
             <ItemCard

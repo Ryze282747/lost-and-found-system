@@ -1,6 +1,8 @@
+
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Card from '../../components/Card/Card.jsx';
+import { createItem } from '../Items/api/itemApi.js';
 import styles from './Report.module.css';
 
 const categories = [
@@ -25,6 +27,7 @@ function Report() {
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!image?.preview) return;
@@ -58,6 +61,8 @@ function Report() {
         ...previous,
         image: 'Please select a valid image file.',
       }));
+
+      event.target.value = '';
       return;
     }
 
@@ -66,6 +71,8 @@ function Report() {
         ...previous,
         image: 'Image size must be 5 MB or less.',
       }));
+
+      event.target.value = '';
       return;
     }
 
@@ -82,8 +89,25 @@ function Report() {
     setMessage('');
   }
 
-  function handleSubmit(event) {
+  function handleRemoveImage() {
+    setImage(null);
+
+    const fileInput = document.getElementById('item-image');
+
+    if (fileInput) {
+      fileInput.value = '';
+    }
+
+    setErrors((previous) => ({
+      ...previous,
+      image: '',
+    }));
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
+
+    if (isSubmitting) return;
 
     const newErrors = {};
 
@@ -105,9 +129,7 @@ function Report() {
 
     if (!formData.date) {
       newErrors.date = 'Please select a date.';
-    }
-
-    if (formData.date && formData.date > getToday()) {
+    } else if (formData.date > getToday()) {
       newErrors.date = 'The date cannot be in the future.';
     }
 
@@ -118,9 +140,56 @@ function Report() {
       return;
     }
 
-    setMessage(
-      'Form validated successfully. Report submission will be connected to the backend later.'
-    );
+    try {
+      setIsSubmitting(true);
+      setMessage('');
+
+      // Send the report fields and optional photo as multipart form data.
+      const payload = new FormData();
+
+      payload.append('name', formData.name.trim());
+      payload.append('category', formData.category);
+      payload.append('status', formData.type);
+      payload.append('description', formData.description.trim());
+      payload.append('location', formData.location.trim());
+      payload.append('date', formData.date);
+
+      if (image?.file) {
+        payload.append('image', image.file);
+      }
+
+      await createItem(payload);
+
+      setMessage('Report submitted successfully!');
+
+      setFormData({
+        type: 'lost',
+        name: '',
+        category: '',
+        description: '',
+        location: '',
+        date: '',
+      });
+
+      setImage(null);
+      setErrors({});
+
+      const fileInput = document.getElementById('item-image');
+
+      if (fileInput) {
+        fileInput.value = '';
+      }
+    } catch (error) {
+      console.error('Failed to submit report:', error);
+
+      setMessage(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          'Unable to submit your report. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function getToday() {
@@ -150,7 +219,7 @@ function Report() {
 
       <Card className={styles.formCard} padding="lg">
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          <fieldset className={styles.typeFieldset}>
+          <fieldset className={styles.typeFieldset} disabled={isSubmitting}>
             <legend className={styles.sectionTitle}>
               What are you reporting?
             </legend>
@@ -215,7 +284,8 @@ function Report() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. Black leather wallet"
-                maxLength={100}
+                maxLength={200}
+                disabled={isSubmitting}
                 aria-invalid={Boolean(errors.name)}
                 aria-describedby={errors.name ? 'name-error' : undefined}
               />
@@ -235,6 +305,7 @@ function Report() {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
+                disabled={isSubmitting}
                 aria-invalid={Boolean(errors.category)}
                 aria-describedby={
                   errors.category ? 'category-error' : undefined
@@ -267,6 +338,7 @@ function Report() {
                 placeholder="Describe the item's color, brand, appearance, or other identifying details."
                 rows={5}
                 maxLength={1000}
+                disabled={isSubmitting}
                 aria-invalid={Boolean(errors.description)}
                 aria-describedby={
                   errors.description ? 'description-error' : undefined
@@ -300,7 +372,8 @@ function Report() {
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="e.g. School library, Room 204"
-                maxLength={150}
+                maxLength={200}
+                disabled={isSubmitting}
                 aria-invalid={Boolean(errors.location)}
                 aria-describedby={
                   errors.location ? 'location-error' : undefined
@@ -326,6 +399,7 @@ function Report() {
                 value={formData.date}
                 onChange={handleChange}
                 max={getToday()}
+                disabled={isSubmitting}
                 aria-invalid={Boolean(errors.date)}
                 aria-describedby={errors.date ? 'date-error' : undefined}
               />
@@ -372,19 +446,15 @@ function Report() {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
+              disabled={isSubmitting}
             />
 
             {image && (
               <button
                 type="button"
                 className={styles.removeImageButton}
-                onClick={() => {
-                  setImage(null);
-                  setErrors((previous) => ({
-                    ...previous,
-                    image: '',
-                  }));
-                }}
+                onClick={handleRemoveImage}
+                disabled={isSubmitting}
               >
                 <i className="ri-delete-bin-line" aria-hidden="true" />
                 Remove image
@@ -397,9 +467,17 @@ function Report() {
           </section>
 
           {message && (
-            <div className={styles.successMessage} role="status">
+            <div
+              className={styles.successMessage}
+              role="status"
+              aria-live="polite"
+            >
               <i
-                className="ri-checkbox-circle-line"
+                className={
+                  message === 'Report submitted successfully!'
+                    ? 'ri-checkbox-circle-line'
+                    : 'ri-error-warning-line'
+                }
                 aria-hidden="true"
               />
               <span>{message}</span>
@@ -407,18 +485,36 @@ function Report() {
           )}
 
           <div className={styles.formActions}>
-            <Link to="/items" className={styles.cancelButton}>
+            <Link
+              to="/items"
+              className={styles.cancelButton}
+              aria-disabled={isSubmitting}
+              onClick={(event) => {
+                if (isSubmitting) event.preventDefault();
+              }}
+            >
               Cancel
             </Link>
 
-            <button type="submit" className={styles.submitButton}>
-              <i className="ri-send-plane-line" aria-hidden="true" />
-              Validate Report
+            <button
+              type="submit"
+              className={styles.submitButton}
+              disabled={isSubmitting}
+            >
+              <i
+                className={
+                  isSubmitting
+                    ? 'ri-loader-4-line'
+                    : 'ri-send-plane-line'
+                }
+                aria-hidden="true"
+              />
+              {isSubmitting ? 'Submitting...' : 'Submit Report'}
             </button>
           </div>
 
           <p className={styles.formNote}>
-            * Required fields. This demo does not submit or save reports yet.
+            * Image upload will come next update.
           </p>
         </form>
       </Card>

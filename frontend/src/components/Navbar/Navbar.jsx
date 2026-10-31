@@ -15,7 +15,7 @@ function Navbar() {
           {/* Brand */}
           <a href="/" className={styles.brand}>
             <i className="ri-search-eye-line" aria-hidden="true"></i>
-            <span className={styles.brandName}>Lost & Found</span>
+            <span className={styles.brandName}>Wayback</span>
           </a>
 
           {/* Desktop navigation */}
